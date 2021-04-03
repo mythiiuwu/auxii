@@ -25,10 +25,10 @@ async def on_message(message):
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
         
-        await message.channel.send("Cost: " + cost)
+        
         b = (a[a.find('**Description:** Deals '):a.find(' of your')])
         damage = b[25:-3]
-        await message.channel.send("Damage: " + damage)
+        
         maxquality = ((((250-float(cost))+(float(damage)-35)*5) + 100)/3)
         await message.channel.send("Max Quality: " + str(maxquality))
         if maxquality > 95 and maxquality < 100:
@@ -51,10 +51,10 @@ async def on_message(message):
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
         
-        await message.channel.send("Cost: " + cost)
+        
         b = (a[a.find('**Description:** Heals '):a.find(' of your')])
         damage = b[25:-3]
-        await message.channel.send("Heals: " + damage)
+        
         maxquality = (((200-float(cost))/75*100+2*(float(damage)-100)) + 100)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         if maxquality > 95 and maxquality < 100:
@@ -71,6 +71,58 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
+  if 'Bow' in message.embeds[0].description:
+    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+        a = message.embeds[0].description
+        costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
+        cost = costdesc[13:]
+        b = (a[a.find('**Description:** Deals '):a.find(' of your')])
+        damage = b[25:-3]
+        
+        maxquality = ((220-float(cost)) + 2*(float(damage)-110)+100)/3
+        await message.channel.send("Max Quality: " + str(maxquality))
+        if maxquality > 95 and maxquality < 100:
+          await message.add_reaction('<a:Legendary:828000283949924352>')
+        if maxquality == 100:
+          await message.add_reaction('<a:Fabled:828000330117415002>')
+        if maxquality > 80 and maxquality < 95:
+          await message.add_reaction('<:mythic:828001905409785926>')
+        if maxquality > 60 and maxquality < 80:
+          await message.add_reaction('<:epic:828000457192243210>')
+        if maxquality > 40 and maxquality < 60:
+          await message.add_reaction('<:OwO_Rare:828002430431264789>')
+        if maxquality > 20 and maxquality < 40:
+          await message.add_reaction('<:uncommon:828002604163661865>')
+        if maxquality > 0 and maxquality < 20:
+          await message.add_reaction('<:OwO_Common:828002747235958805>')
+  if 'Aegis' in message.embeds[0].description:
+    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+        a = message.embeds[0].description
+        costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
+        cost = costdesc[13:]
+        
+        b = (a[a.find('Reduces incoming damage by '):a.find('**Energize**')])
+        
+        damage = b[29:-33]
+        
+        
+        maxquality = ((250-float(cost)) + 5*(float(damage)-30)+100)/3
+        await message.channel.send("Max Quality: " + str(maxquality))
+        if maxquality > 95 and maxquality < 100:
+          await message.add_reaction('<a:Legendary:828000283949924352>')
+        if maxquality == 100:
+          await message.add_reaction('<a:Fabled:828000330117415002>')
+        if maxquality > 80 and maxquality < 95:
+          await message.add_reaction('<:mythic:828001905409785926>')
+        if maxquality > 60 and maxquality < 80:
+          await message.add_reaction('<:epic:828000457192243210>')
+        if maxquality > 40 and maxquality < 60:
+          await message.add_reaction('<:OwO_Rare:828002430431264789>')
+        if maxquality > 20 and maxquality < 40:
+          await message.add_reaction('<:uncommon:828002604163661865>')
+        if maxquality > 0 and maxquality < 20:
+          await message.add_reaction('<:OwO_Common:828002747235958805>')
+  
   
         
 
