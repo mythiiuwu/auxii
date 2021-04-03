@@ -122,6 +122,59 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
+  if 'Orb of Potency' in message.embeds[0].description:
+    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+       await message.channel.send("orb noob")
+
+  if 'Vampiric Staff' in message.embeds[0].description:
+    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+        a = message.embeds[0].description
+        costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
+        cost = costdesc[13:]
+        b = (a[a.find('**Description:** Deal '):a.find(' of your')])
+        damage = b[24:-3]
+        
+        maxquality = ((200-float(cost)) + 5*(float(damage)-25)+100)/3
+        await message.channel.send("Max Quality: " + str(maxquality))
+        if maxquality > 95 and maxquality < 100:
+          await message.add_reaction('<a:Legendary:828000283949924352>')
+        if maxquality == 100:
+          await message.add_reaction('<a:Fabled:828000330117415002>')
+        if maxquality > 80 and maxquality < 95:
+          await message.add_reaction('<:mythic:828001905409785926>')
+        if maxquality > 60 and maxquality < 80:
+          await message.add_reaction('<:epic:828000457192243210>')
+        if maxquality > 40 and maxquality < 60:
+          await message.add_reaction('<:OwO_Rare:828002430431264789>')
+        if maxquality > 20 and maxquality < 40:
+          await message.add_reaction('<:uncommon:828002604163661865>')
+        if maxquality > 0 and maxquality < 20:
+          await message.add_reaction('<:OwO_Common:828002747235958805>')
+  if 'Energy Staff' in message.embeds[0].description:
+    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+        a = message.embeds[0].description
+        costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
+        cost = costdesc[13:]
+        b = (a[a.find('**Description:** Sends a wave of energy and deals '):a.find(' of your')])
+        damage = b[52:-3]
+        await message.channel.send(damage)
+        
+        maxquality = ((200-float(cost)) + 100/30*(float(damage)-35)+100)/3
+        await message.channel.send("Max Quality: " + str(maxquality))
+        if maxquality > 95 and maxquality < 100:
+          await message.add_reaction('<a:Legendary:828000283949924352>')
+        if maxquality == 100:
+          await message.add_reaction('<a:Fabled:828000330117415002>')
+        if maxquality > 80 and maxquality < 95:
+          await message.add_reaction('<:mythic:828001905409785926>')
+        if maxquality > 60 and maxquality < 80:
+          await message.add_reaction('<:epic:828000457192243210>')
+        if maxquality > 40 and maxquality < 60:
+          await message.add_reaction('<:OwO_Rare:828002430431264789>')
+        if maxquality > 20 and maxquality < 40:
+          await message.add_reaction('<:uncommon:828002604163661865>')
+        if maxquality > 0 and maxquality < 20:
+          await message.add_reaction('<:OwO_Common:828002747235958805>')
   
   
         
