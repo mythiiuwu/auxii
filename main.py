@@ -32,8 +32,22 @@ async def on_guild_join(guild):
     json.dump(prefixes,f, indent=4)
 
 
-
-
+@client.command()
+async def maxqualityreact(message, maxquality):
+  if maxquality > 95 and maxquality < 100:
+    await message.add_reaction('<a:Legendary:828000283949924352>')
+  if maxquality == 100:
+    await message.add_reaction('<a:Fabled:828000330117415002>')
+  if maxquality > 80 and maxquality < 95:
+    await message.add_reaction('<:mythic:828001905409785926>')
+  if maxquality > 60 and maxquality < 80:
+    await message.add_reaction('<:epic:828000457192243210>')
+  if maxquality > 40 and maxquality < 60:
+    await message.add_reaction('<:OwO_Rare:828002430431264789>')
+  if maxquality > 20 and maxquality < 40:
+    await message.add_reaction('<:uncommon:828002604163661865>')
+  if maxquality > 0 and maxquality < 20:
+    await message.add_reaction('<:OwO_Common:828002747235958805>')
 
 @client.event
 async def on_guild_remove(guild):
@@ -108,20 +122,7 @@ async def on_message(message):
 
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Healing Staff' in message.embeds[0].description:
      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -136,20 +137,7 @@ async def on_message(message):
         lowest = (((200-float(cost))/75*100+2*(float(damage)-100)) + 0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Bow' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -162,20 +150,7 @@ async def on_message(message):
         lowest = ((220-float(cost)) + 2*(float(damage)-110)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Aegis' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -191,20 +166,7 @@ async def on_message(message):
         lowest = ((250-float(cost)) + 5*(float(damage)-30)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Orb of Potency' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
        await message.channel.send("orb noob")
@@ -220,20 +182,7 @@ async def on_message(message):
         lowest = ((200-float(cost)) + 5*(float(damage)-25)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Energy Staff' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -247,20 +196,7 @@ async def on_message(message):
         lowest = ((200-float(cost)) + 100/30*(float(damage)-35)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Arcane Scepter' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -274,20 +210,7 @@ async def on_message(message):
         lowest = (4/3*(200-float(cost)) + 100/30*(float(damage)-40)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        maxqualityreact(maxquality)
     if 'Resurrection Staff' in message.embeds[0].description: 
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -301,20 +224,7 @@ async def on_message(message):
         lowest = ((400-float(cost)) + 100/30*(float(damage)-50)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Glacial Axe' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -329,20 +239,7 @@ async def on_message(message):
         lowest = ((((220-float(cost))+(float(damage)-50)*100/30) + 0)/3)
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')       
+        await maxqualityreact(message, maxquality)    
     if 'Poison Dagger' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -359,20 +256,7 @@ async def on_message(message):
         await message.channel.send("Max Quality: "+ str(maxactualquality))
         await message.channel.send("Lowest Quality: "+ str(lowest))
         await message.channel.send("Max Important Quality: " + str(maxquality))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Wand of Absorption' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -388,20 +272,7 @@ async def on_message(message):
         lowest = ((250-float(cost))+((float(damage)-80)/20*100)+((float(replenish)-20)/20*100)+(0))/4
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
     if 'Spirit Staff' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -419,20 +290,7 @@ async def on_message(message):
         lowest = ((225-float(cost))+((float(heal)-30)/20*100)+((float(defup)-20)/10*100)+(0))/4
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')      
+        await maxqualityreact(message, maxquality)     
     if 'Culling Scythe' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -455,20 +313,7 @@ async def on_message(message):
         await message.channel.send("Lowest Quality: " + str(lowest))
         
        
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')  
+        await maxqualityreact(message, maxquality)  
     if 'Banner' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -487,20 +332,7 @@ async def on_message(message):
         lowest = ((300-float(cost))*2 + (float(buff1)-10)*10 + (float(buff2)-20)*10 + (float(buff3)-30)*10+0)/5
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
-        if maxquality > 95 and maxquality < 100:
-          await message.add_reaction('<a:Legendary:828000283949924352>')
-        if maxquality == 100:
-          await message.add_reaction('<a:Fabled:828000330117415002>')
-        if maxquality > 80 and maxquality < 95:
-          await message.add_reaction('<:mythic:828001905409785926>')
-        if maxquality > 60 and maxquality < 80:
-          await message.add_reaction('<:epic:828000457192243210>')
-        if maxquality > 40 and maxquality < 60:
-          await message.add_reaction('<:OwO_Rare:828002430431264789>')
-        if maxquality > 20 and maxquality < 40:
-          await message.add_reaction('<:uncommon:828002604163661865>')
-        if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+        await maxqualityreact(message, maxquality)
   except:
     
     pass
