@@ -14,6 +14,7 @@ from discord.ext.commands import has_permissions,  CheckFailure, check
 client = discord.Client()
 
 client = commands.Bot(command_prefix = "m")
+
 @client.event
 async def on_ready():
     print("bot online")
@@ -27,8 +28,11 @@ def find_nth(haystack, needle, n):
 
 @client.event
 async def on_message(message):
-  if 'Great Sword' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+  await client.process_commands(message)
+  try:
+
+    if 'Great Sword' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -53,8 +57,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Healing Staff' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Healing Staff' in message.embeds[0].description:
+     if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -79,8 +83,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Bow' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Bow' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -103,8 +107,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Aegis' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Aegis' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -130,11 +134,11 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Orb of Potency' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Orb of Potency' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
        await message.channel.send("orb noob")
-  if 'Vampiric Staff' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Vampiric Staff' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -157,8 +161,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Energy Staff' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Energy Staff' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -182,8 +186,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Arcane Scepter' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Arcane Scepter' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -207,8 +211,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Resurrection Staff' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Resurrection Staff' in message.embeds[0].description: 
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -232,9 +236,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Glacial Axe' in message.embeds[0].description:
-    
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Glacial Axe' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -259,24 +262,19 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')       
-  if 'Poison Dagger' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Poison Dagger' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
-        
-        
         b = (a[a.find('**Description:** Deals '):a.find(' of your')])
         damage = b[25:-3]
-        
         c = (a[a.find('**Poison** - Deals '): a.find(' MAG as')])
         poison = c[21:-37]
-    
         maxactualquality = ((200-float(cost))+((float(damage)-70)/30*100)+((float(poison)-40)/25*100)+(100))/4
         await message.channel.send(maxactualquality)
         maxquality = (((200-float(cost))+(float(poison)-40)/25*100)+100)/3
         await message.channel.send("Max Quality: "+ str(maxactualquality))
-
         await message.channel.send("Max Important Quality: " + str(maxquality))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
@@ -292,8 +290,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Wand of Absorption' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Wand of Absorption' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -321,8 +319,8 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')
-  if 'Spirit Staff' in message.embeds[0].description:
-    if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+    if 'Spirit Staff' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
@@ -350,49 +348,96 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')      
+    if 'Culling Scythe' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+        a = message.embeds[0].description
+        costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
+        cost = costdesc[13:]
+        
+        
+        b = (a[a.find('**Description:** Deals '):a.find(' of your')])
+        damage = b[25:-3]
+        await message.channel.send(damage)
+        c = (a[a.find('animal by '):find_nth(a, "%", 3)])
+        mortality = c[12:]
+        await message.channel.send(mortality)
+        
+        maxactualquality = ((200-float(cost))+((float(damage)-70)/30*100)+((float(mortality)-30)/30*100)+(100))/4
+        await message.channel.send(maxactualquality)
+
+        
+        await message.channel.send("Max Quality: " + str(maxquality))
+        if maxquality > 95 and maxquality < 100:
+          await message.add_reaction('<a:Legendary:828000283949924352>')
+        if maxquality == 100:
+          await message.add_reaction('<a:Fabled:828000330117415002>')
+        if maxquality > 80 and maxquality < 95:
+          await message.add_reaction('<:mythic:828001905409785926>')
+        if maxquality > 60 and maxquality < 80:
+          await message.add_reaction('<:epic:828000457192243210>')
+        if maxquality > 40 and maxquality < 60:
+          await message.add_reaction('<:OwO_Rare:828002430431264789>')
+        if maxquality > 20 and maxquality < 40:
+          await message.add_reaction('<:uncommon:828002604163661865>')
+        if maxquality > 0 and maxquality < 20:
+          await message.add_reaction('<:OwO_Common:828002747235958805>')  
     
+
+
+  except:
+    
+    pass
+    
+    
+@client.command()
+async def info(ctx):
+  embed=discord.Embed(title="Haiiiiii!", description="Made by mythii#9555!", color=0x70ffee)
+  embed.set_author(name="mythii", icon_url="https://cdn.discordapp.com/avatars/470431863316414465/a_4e31f433c9aae3c2dd36fb55d0335a18.gif?size=256")
+  embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/719721942742990889/6999b9abe3d5c863a26c61695c75c240.png?size=256")
+  embed.set_footer(text="coop is cute")
+  await ctx.send(embed=embed)
   
 @client.command()
+async def howto(ctx):
+  embed=discord.Embed(title="OwObot Helper", color=0x70ffee)
+  embed.add_field(name="Ping", value="Gets bot latency", inline=False)
+  embed.add_field(name="Info", value="Shows bot info", inline=False)
+  embed.add_field(name="Choose", value="mchoose {a} {b}, chooses random choice", inline=False)
+  embed.add_field(name="cf/coinflip", value="mcf {head or tail}, will generate a coinflip", inline=False)
+  embed.set_footer(text="coop is cute")
+  await ctx.send(embed=embed)
+
+@client.command()
 async def ping(ctx):
-    await ctx.send("pong!")
-    await ctx.send("@everyone") 
-@client.command()
-async def kick(ctx, member : discord.Member, reason = None):
-    try:
-        await client.kick(reason=reason)
-        await ctx.send("kicked "+member.mention) 
-        
-    except:
-        await ctx.send("bot does not have the kick members permission!")
-@client.command()
-async def ban(ctx, member : discord.Member, reason = None):
-  try:
-    if reason is None:
-      await client.ban()
-      await ctx.send("banned" + member.mention)
-    else:
-      await client.ban(reason=reason)
-      await ctx.send("banned" + member.mention + reason)
-  except:
-    await ctx.send("no perms!")
+    ms = client.latency * 1000
+    await ctx.send('Pong! ' + str(ms) + ' ms')
 
 @client.command()  
 async def choose(ctx, *choices: str):
     await ctx.send(random.choice(choices))
 
 @client.command()  
-async def cf(headtail: str):
+async def cf(ctx, headtail: str):
   if(headtail != "head") and headtail != "tail":
-    await message.channel.send("invalid")
+    await ctx.send("invalid")
   else:
     
     choices = ["head","tail"]
     a = random.choice(choices)
     
     if a == headtail:
-       await message.channel.send("the coin landed on " + a + " you were correct")
+      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you were correct!!!"), color=0x00ff08)
+      embed.set_author(name="auxii", icon_url="https://cdn.discordapp.com/avatars/719721942742990889/6999b9abe3d5c863a26c61695c75c240.png?size=256")
+      embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
+      embed.set_footer(text="coopw is cute")
+      await ctx.send(embed=embed)
+
     else:
-      await message.channel.send("the coin landed on " + a + " you were wrong")
+      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you were wrong!!!"), color=0xff0000)
+      embed.set_author(name="auxii", icon_url="https://cdn.discordapp.com/avatars/719721942742990889/6999b9abe3d5c863a26c61695c75c240.png?size=256")
+      embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
+      embed.set_footer(text="coopw is cute")
+      await ctx.send(embed=embed)
 
 @client.command()  
 async def coinflip(ctx, headtail: str):
