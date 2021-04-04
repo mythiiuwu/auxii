@@ -13,7 +13,7 @@ from discord.ext.commands import has_permissions,  CheckFailure, check
 #^ basic imports for other features of discord.py and python ^
 intents = discord.Intents.all()
 
-#remember to add lowest possible value for weapons
+#remember to add fstaff
 
 def get_prefix(client, message):
   with open("prefixes.json", "r") as f:
@@ -69,7 +69,7 @@ async def on_ready():
       print("no")
 
 
-@client.command()
+@client.command(aliases = ['setup'])
 
 async def startall(ctx):
   with open('owo.txt') as f:
@@ -83,12 +83,16 @@ async def startall(ctx):
   with open("owo.txt", "w") as outfile:
     json.dump(owos, outfile)
 
-
+def find_nth(haystack, needle, n):
+    start = haystack.find(needle)
+    while start >= 0 and n > 1:
+        start = haystack.find(needle, start+len(needle))
+        n -= 1
+    return start
 @client.event
 async def on_message(message):
   await client.process_commands(message)
   try:
-
     if 'Great Sword' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
         a = message.embeds[0].description
@@ -100,7 +104,10 @@ async def on_message(message):
         damage = b[25:-3]
         
         maxquality = ((((250-float(cost))+(float(damage)-35)*5) + 100)/3)
+        lowest = ((((250-float(cost))+(float(damage)-35)*5) + 0)/3)
+
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -126,7 +133,9 @@ async def on_message(message):
         damage = b[25:-3]
         
         maxquality = (((200-float(cost))/75*100+2*(float(damage)-100)) + 100)/3
+        lowest = (((200-float(cost))/75*100+2*(float(damage)-100)) + 0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -150,7 +159,9 @@ async def on_message(message):
         damage = b[25:-3]
         
         maxquality = ((220-float(cost)) + 2*(float(damage)-110)+100)/3
+        lowest = ((220-float(cost)) + 2*(float(damage)-110)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -177,7 +188,9 @@ async def on_message(message):
        
         
         maxquality = ((250-float(cost)) + 5*(float(damage)-30)+100)/3
+        lowest = ((250-float(cost)) + 5*(float(damage)-30)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -204,7 +217,9 @@ async def on_message(message):
         damage = b[24:-3]
         
         maxquality = ((200-float(cost)) + 5*(float(damage)-25)+100)/3
+        lowest = ((200-float(cost)) + 5*(float(damage)-25)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -229,7 +244,9 @@ async def on_message(message):
         
         
         maxquality = ((200-float(cost)) + 100/30*(float(damage)-35)+100)/3
+        lowest = ((200-float(cost)) + 100/30*(float(damage)-35)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -254,7 +271,9 @@ async def on_message(message):
         
         
         maxquality = (4/3*(200-float(cost)) + 100/30*(float(damage)-40)+100)/3
+        lowest = (4/3*(200-float(cost)) + 100/30*(float(damage)-40)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -279,7 +298,9 @@ async def on_message(message):
         
         
         maxquality = ((400-float(cost)) + 100/30*(float(damage)-50)+100)/3
+        lowest = ((400-float(cost)) + 100/30*(float(damage)-50)+0)/3
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -305,7 +326,9 @@ async def on_message(message):
         damage = b[25:-3]
         
         maxquality = ((((220-float(cost))+(float(damage)-50)*100/30) + 100)/3)
+        lowest = ((((220-float(cost))+(float(damage)-50)*100/30) + 0)/3)
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -330,9 +353,11 @@ async def on_message(message):
         c = (a[a.find('**Poison** - Deals '): a.find(' MAG as')])
         poison = c[21:-37]
         maxactualquality = ((200-float(cost))+((float(damage)-70)/30*100)+((float(poison)-40)/25*100)+(100))/4
+        lowest = ((200-float(cost))+((float(damage)-70)/30*100)+((float(poison)-40)/25*100)+(0))/4
     
         maxquality = (((200-float(cost))+(float(poison)-40)/25*100)+100)/3
         await message.channel.send("Max Quality: "+ str(maxactualquality))
+        await message.channel.send("Lowest Quality: "+ str(lowest))
         await message.channel.send("Max Important Quality: " + str(maxquality))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
@@ -353,8 +378,6 @@ async def on_message(message):
         a = message.embeds[0].description
         costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
         cost = costdesc[13:]
-        
-        
         b = (a[a.find('**Description:** Deal '):a.find(' of your')])
         damage = b[24:-3]
         
@@ -362,7 +385,9 @@ async def on_message(message):
         replenish = c[11:]
       
         maxquality = ((250-float(cost))+((float(damage)-80)/20*100)+((float(replenish)-20)/20*100)+(100))/4
+        lowest = ((250-float(cost))+((float(damage)-80)/20*100)+((float(replenish)-20)/20*100)+(0))/4
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -391,7 +416,9 @@ async def on_message(message):
         defup = c[21:]
       
         maxquality = ((225-float(cost))+((float(heal)-30)/20*100)+((float(defup)-20)/10*100)+(100))/4
+        lowest = ((225-float(cost))+((float(heal)-30)/20*100)+((float(defup)-20)/10*100)+(0))/4
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -422,9 +449,10 @@ async def on_message(message):
         
         maxquality = ((200-float(cost))+((float(mortality)-30)/30*100)+(100))/3
         maxactualquality = ((200-float(cost))+((float(damage)-70)/30*100)+((float(mortality)-30)/30*100)+(100))/4
+        lowest = ((200-float(cost))+((float(damage)-70)/30*100)+((float(mortality)-30)/30*100)+(0))/4
         await message.channel.send("Max Actual Quality: " + str(maxactualquality))
         await message.channel.send("Max Important Quality: " + str(maxquality))
-
+        await message.channel.send("Lowest Quality: " + str(lowest))
         
        
         if maxquality > 95 and maxquality < 100:
@@ -452,9 +480,13 @@ async def on_message(message):
         c = (a[find_nth(a,'Increases all damage by ', 2 ): find_nth(a, "%", 3)])
         buff2 = c[26:]
         d = (a[find_nth(a,'Increases all damage by ', 3 ): find_nth(a, "%", 4)])
-        buff3 = d[26:]        
+        buff3 = d[26:]
+        
+        
         maxquality = ((300-float(cost))*2 + (float(buff1)-10)*10 + (float(buff2)-20)*10 + (float(buff3)-30)*10+100)/5
+        lowest = ((300-float(cost))*2 + (float(buff1)-10)*10 + (float(buff2)-20)*10 + (float(buff3)-30)*10+0)/5
         await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -468,21 +500,7 @@ async def on_message(message):
         if maxquality > 20 and maxquality < 40:
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
-          await message.add_reaction
-          ('<:OwO_Common:828002747235958805>')
-    
-      
-          
-
-
-    
-      else:
-        pass
-
-    
-    
-    
-  
+          await message.add_reaction('<:OwO_Common:828002747235958805>')
   except:
     
     pass
@@ -496,6 +514,7 @@ async def info(ctx):
   embed.set_footer(text="coop is cute")
   await ctx.send(embed=embed)
 client.remove_command('help')
+
 @client.command(aliases = ["howto"])
 async def help(ctx):
   embed=discord.Embed(title="OwObot Helper", color=0x70ffee)
@@ -550,11 +569,6 @@ async def stat(ctx, user: discord.Member):
   embed=discord.Embed(title= (user.name + "'s owos"), description=(user.name + " has " + str(owos[id]) + " owos"), color=0x00ff59)
   embed.set_footer(text="coolw")
   await ctx.send(embed=embed)
-#@client.command(aliases = ['r'])
-#async def reminder(message, command: str, state: str):
- # user = message.author
-  #if(command == ("owo") and (state == 'on' or state == 'off')):
-   # await message.channel.send(user + ", your owo reminder is on!") - reminder bot
 
 
 
