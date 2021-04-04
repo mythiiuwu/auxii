@@ -11,8 +11,9 @@ from discord.utils import get
 from discord.ext import commands, tasks
 from discord.ext.commands import has_permissions,  CheckFailure, check
 #^ basic imports for other features of discord.py and python ^
+intents = discord.Intents.all()
 
-
+#remember to add lowest possible value for weapons
 
 def get_prefix(client, message):
   with open("prefixes.json", "r") as f:
@@ -21,7 +22,7 @@ def get_prefix(client, message):
   return prefixes[str(message.guild.id)]
   
 
-client = commands.Bot(command_prefix = get_prefix)
+client = commands.Bot(intents = intents, command_prefix = get_prefix)
 @client.event
 async def on_guild_join(guild):
   with open("prefixes.json", "r") as f:
@@ -44,7 +45,7 @@ async def on_guild_remove(guild):
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
-@client.command()
+@client.command(aliases = ['prefix'])
 async def setprefix(ctx, prefix):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
@@ -60,14 +61,28 @@ async def setprefix(ctx, prefix):
 
 @client.event
 async def on_ready():
-    print("Logged in as: " + client.user.name + "\n") #screw u
+    print("Logged in as: " + client.user.name + "\n") 
+    try: 
+      with open('owo.txt') as f:
+            owos = json.load(f)
+    except:
+      print("no")
 
-def find_nth(haystack, needle, n):
-    start = haystack.find(needle)
-    while start >= 0 and n > 1:
-        start = haystack.find(needle, start+len(needle))
-        n -= 1
-    return start    
+
+@client.command()
+
+async def startall(ctx):
+  with open('owo.txt') as f:
+    owos = json.load(f)
+  for user in ctx.guild.members:
+    id = str(user.id)
+    if id in owos:
+      pass
+    else:
+      owos[id] = 0
+  with open("owo.txt", "w") as outfile:
+    json.dump(owos, outfile)
+
 
 @client.event
 async def on_message(message):
@@ -437,14 +452,8 @@ async def on_message(message):
         c = (a[find_nth(a,'Increases all damage by ', 2 ): find_nth(a, "%", 3)])
         buff2 = c[26:]
         d = (a[find_nth(a,'Increases all damage by ', 3 ): find_nth(a, "%", 4)])
-        buff3 = d[26:]
-        
-        
+        buff3 = d[26:]        
         maxquality = ((300-float(cost))*2 + (float(buff1)-10)*10 + (float(buff2)-20)*10 + (float(buff3)-30)*10+100)/5
-        
-
-        
-
         await message.channel.send("Max Quality: " + str(maxquality))
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
@@ -459,9 +468,21 @@ async def on_message(message):
         if maxquality > 20 and maxquality < 40:
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
-          await message.add_reaction('<:OwO_Common:828002747235958805>')
+          await message.add_reaction
+          ('<:OwO_Common:828002747235958805>')
+    
+      
+          
 
 
+    
+      else:
+        pass
+
+    
+    
+    
+  
   except:
     
     pass
@@ -475,13 +496,14 @@ async def info(ctx):
   embed.set_footer(text="coop is cute")
   await ctx.send(embed=embed)
 client.remove_command('help')
-@client.command()
+@client.command(aliases = ["howto"])
 async def help(ctx):
   embed=discord.Embed(title="OwObot Helper", color=0x70ffee)
-  embed.add_field(name="Ping", value="Gets client latency", inline=False)
+  embed.add_field(name="Ping", value="Gets bot latency", inline=False)
   embed.add_field(name="Info", value="Shows client info", inline=False)
   embed.add_field(name="Choose", value="{prefix}choose {a} {b}, chooses random choice", inline=False)
   embed.add_field(name="cf/coinflip", value="{prefix}cf {head or tail}, will generate a coinflip", inline=False)
+  embed.add_field(name="prefix", value="sets a new prefix for the server", inline=False)
   embed.set_footer(text="coop is cute")
   await ctx.send(embed=embed)
 
@@ -520,11 +542,25 @@ async def cf(ctx, headtail: str):
   except:
     await ctx.send("error!")
 
+@client.command(aliases = ['owostat'])
+async def stat(ctx, user: discord.Member):
+  with open('owo.txt') as f:
+    owos = json.load(f)
+  id = str(user.id)
+  embed=discord.Embed(title= (user.name + "'s owos"), description=(user.name + " has " + str(owos[id]) + " owos"), color=0x00ff59)
+  embed.set_footer(text="coolw")
+  await ctx.send(embed=embed)
+#@client.command(aliases = ['r'])
+#async def reminder(message, command: str, state: str):
+ # user = message.author
+  #if(command == ("owo") and (state == 'on' or state == 'off')):
+   # await message.channel.send(user + ", your owo reminder is on!") - reminder bot
 
 
 
-
-
+def _save():
+    with open('owo.txt', 'w+') as f:
+        json.dump(owos, f)
 
 
 
