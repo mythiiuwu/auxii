@@ -494,7 +494,7 @@ async def ping(ctx):
 async def choose(ctx, *choices: str):
     await ctx.send(random.choice(choices))
 
-@client.command()  
+@client.command(aliases = ['coinflip'])  
 async def cf(ctx, headtail: str):
   try:
     if(headtail != "head") and headtail != "tail":
@@ -525,28 +525,9 @@ async def cf(ctx, headtail: str):
 
 
 
-@client.command()  
-async def coinflip(ctx, headtail: str):
-  if(headtail != "head") and headtail != "tail":
-    headtail = random.choice("head", "tail")
-  else:
-    
-    choices = ["head","tail"]
-    a = random.choice(choices)
-    
-    if a == headtail:
-      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you good good!!!"), color=0x00ff08)
-      embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-      embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
-      embed.set_footer(text="coopw is cute")
-      await ctx.send(embed=embed)
 
-    else:
-      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you bad bad!!!"), color=0xff0000)
-      embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-      embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
-      embed.set_footer(text="coopw is cute")
-      await ctx.send(embed=embed)
+
+
 
 
 
