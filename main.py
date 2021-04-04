@@ -6,13 +6,17 @@ import discord.ext
 import random
 import emoji
 import json
+import asyncio
+import datetime
 from discord import Embed
 from discord.utils import get
 from discord.ext import commands, tasks
+from discord.ext.commands import MemberConverter 
+
 from discord.ext.commands import has_permissions,  CheckFailure, check
 #^ basic imports for other features of discord.py and python ^
 intents = discord.Intents.all()
-
+cooldown = []
 #remember to add fstaff
 
 def get_prefix(client, message):
@@ -21,6 +25,7 @@ def get_prefix(client, message):
 
   return prefixes[str(message.guild.id)]
   
+
 
 client = commands.Bot(intents = intents, command_prefix = get_prefix)
 @client.event
@@ -38,15 +43,15 @@ async def maxqualityreact(message, maxquality):
     await message.add_reaction('<a:Legendary:828000283949924352>')
   if maxquality == 100:
     await message.add_reaction('<a:Fabled:828000330117415002>')
-  if maxquality > 80 and maxquality < 95:
+  if maxquality > 81 and maxquality < 95:
     await message.add_reaction('<:mythic:828001905409785926>')
-  if maxquality > 60 and maxquality < 80:
+  if maxquality > 61 and maxquality < 81:
     await message.add_reaction('<:epic:828000457192243210>')
-  if maxquality > 40 and maxquality < 60:
+  if maxquality > 41 and maxquality < 61:
     await message.add_reaction('<:OwO_Rare:828002430431264789>')
-  if maxquality > 20 and maxquality < 40:
+  if maxquality > 21 and maxquality < 41:
     await message.add_reaction('<:uncommon:828002604163661865>')
-  if maxquality > 0 and maxquality < 20:
+  if maxquality > 0 and maxquality < 21:
     await message.add_reaction('<:OwO_Common:828002747235958805>')
 
 @client.event
@@ -105,7 +110,7 @@ def find_nth(haystack, needle, n):
     return start
 @client.event
 async def on_message(message):
-  await client.process_commands(message)
+  
   try:
     if 'Great Sword' in message.embeds[0].description:
       if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
@@ -333,11 +338,72 @@ async def on_message(message):
         await message.channel.send("Max Quality: " + str(maxquality))
         await message.channel.send("Lowest Quality: " + str(lowest))
         await maxqualityreact(message, maxquality)
+    if 'Flame Staff' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+        a = message.embeds[0].description
+        costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
+        cost = costdesc[13:]
+        
+        
+        b = (a[a.find('**Description:** Deals '):a.find(' of your')])
+        damage = b[25:-3]
+        c = (a[find_nth(a, 'Deals', 2):find_nth(a,'of your', 2)])
+        flame = c[8:-4]
+        d = (a[find_nth(a, 'deal ', 1):find_nth(a,'%', 4)])
+        explosion = d[7:]
+        
+
+        maxquality = ((200-float(cost))+((float(damage)-60)/20*100)+((float(flame)-20)/20*100)+((float(explosion)-40)/20*100)+(100))/5
+        lowest = ((200-float(cost))+((float(damage)-60)/20*100)+((float(flame)-20)/20*100)+((float(explosion)-40)/20*100)+(0))/5
+
+        await message.channel.send("Max Quality: " + str(maxquality))
+        await message.channel.send("Lowest Quality: " + str(lowest))
+        await maxqualityreact(message, maxquality)
+    if 'Rune' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+       await message.add_reaction('<:N104rune:828341609400631298>')
+
   except:
     
     pass
-    
-    
+  
+  await counter(message)
+  await client.process_commands(message)
+
+owoprefix = ['owo', 'h']
+
+@commands.command()
+async def counter(message):
+  userid = str(message.author.id)
+
+  with open('owo.txt') as f:
+    owos = json.load(f)
+  for i in owoprefix:
+    if i in message.content and message.author.bot == False and       cooldown.count(userid) == 0:
+      if userid not in owos:
+        await message.channel.send("please set up the bot with {prefix}setup")
+      else:
+        cooldown.append(userid)
+        owos[userid] += 1
+        await asyncio.sleep(10)
+        cooldown.remove(userid)
+  
+
+  with open('owo.txt', 'w+') as f:
+      json.dump(owos,f) 
+
+
+@client.command(alises = ['reset'])
+async def clear(ctx, user: discord.Member):
+  with open('owo.txt') as f:
+    owos = json.load(f)
+  userid = str(user.id)
+  owos[userid] = 0
+  await ctx.send(str(user) + "'s owos has been reset.")
+  with open('owo.txt', 'w+') as f:
+      json.dump(owos,f) 
+
+
 @client.command()
 async def info(ctx):
   embed=discord.Embed(title="Haiiiiii!", description="Made by mythii#9555!\ncoopw#1111 helped mythii not be an idiot", color=0x70ffee)
@@ -366,6 +432,33 @@ async def ping(ctx):
 @client.command()  
 async def choose(ctx, *choices: str):
     await ctx.send(random.choice(choices))
+
+@client.command(aliases = ['top', 'lb'])
+async def leaderboard(ctx, number: int):
+  try:
+    embed = discord.Embed(title="Leaderboard", color=0x42b7ff)
+    with open('owo.txt', 'r') as file:
+        data = json.load(file)
+    sorted_data = {id: bal for id, bal in sorted(data.items(), reverse=True ,key=lambda item: item[1])}
+
+    for pos, (id, bal) in enumerate(sorted_data.items()):
+        member = ctx.guild.get_member(int(id))
+        embed.add_field(name=f"{pos+1} - {member.display_name}", value=f"{bal} owos", inline=False)
+        if pos+1 > number - 1:
+            break 
+    await ctx.send(embed=embed)
+  except:
+    ctx.send("invalid!")
+spankgifs = ['https://media.tenor.com/images/fa746bf2689ab4c7b1cc1e39ab2219d5/tenor.gif', 'https://media.discordapp.net/attachments/826857266455642122/828395321716768768/Spank.gif', 'https://media.tenor.com/images/7072c796c7e0a29930721c5f457d563c/tenor.gif', 'https://media.tenor.com/images/d75aead0dbf59fff4b996ebfecde0560/tenor.gif']
+@client.command()
+async def spank(message, *, member: discord.Member):
+  await message.channel.send("<@" + str(message.author.id) + "> " + "spanks " + member.mention + " !")
+
+
+  embed=discord.Embed(title=member.name + " gets a spank!")
+  embed.set_image(url = random.choice(spankgifs))
+  await message.channel.send(embed=embed) 
+
 
 @client.command(aliases = ['coinflip'])  
 async def cf(ctx, headtail: str):
