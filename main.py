@@ -5,6 +5,7 @@ import time
 import discord.ext
 import random
 import emoji
+import json
 from discord import Embed
 from discord.utils import get
 from discord.ext import commands, tasks
@@ -13,11 +14,15 @@ from discord.ext.commands import has_permissions,  CheckFailure, check
 
 client = discord.Client()
 
-client = commands.Bot(command_prefix = "m")
+def get_prefix(client,message):
+  with open("prefixes.json", "r") as f:
+    prefixes = json.load(f)
+  return prefixes[str(message.guild.id)]
+client = commands.Bot(command_prefix = ("m"))
 
 @client.event
 async def on_ready():
-    print("bot online")
+    print("Logged in as: " + client.user.name + "\n") #screw u
 
 def find_nth(haystack, needle, n):
     start = haystack.find(needle)
@@ -272,7 +277,7 @@ async def on_message(message):
         c = (a[a.find('**Poison** - Deals '): a.find(' MAG as')])
         poison = c[21:-37]
         maxactualquality = ((200-float(cost))+((float(damage)-70)/30*100)+((float(poison)-40)/25*100)+(100))/4
-        await message.channel.send(maxactualquality)
+    
         maxquality = (((200-float(cost))+(float(poison)-40)/25*100)+100)/3
         await message.channel.send("Max Quality: "+ str(maxactualquality))
         await message.channel.send("Max Important Quality: " + str(maxquality))
@@ -357,16 +362,18 @@ async def on_message(message):
         
         b = (a[a.find('**Description:** Deals '):a.find(' of your')])
         damage = b[25:-3]
-        await message.channel.send(damage)
+       
         c = (a[a.find('animal by '):find_nth(a, "%", 3)])
         mortality = c[12:]
-        await message.channel.send(mortality)
+       
         
+        maxquality = ((200-float(cost))+((float(mortality)-30)/30*100)+(100))/3
         maxactualquality = ((200-float(cost))+((float(damage)-70)/30*100)+((float(mortality)-30)/30*100)+(100))/4
-        await message.channel.send(maxactualquality)
+        await message.channel.send("Max Actual Quality: " + str(maxactualquality))
+        await message.channel.send("Max Important Quality: " + str(maxquality))
 
         
-        await message.channel.send("Max Quality: " + str(maxquality))
+       
         if maxquality > 95 and maxquality < 100:
           await message.add_reaction('<a:Legendary:828000283949924352>')
         if maxquality == 100:
@@ -381,7 +388,40 @@ async def on_message(message):
           await message.add_reaction('<:uncommon:828002604163661865>')
         if maxquality > 0 and maxquality < 20:
           await message.add_reaction('<:OwO_Common:828002747235958805>')  
-    
+    if 'Banner' in message.embeds[0].description:
+      if message.author.id == 408785106942164992 and message.embeds[0].description.__contains__('**Owner:**'):
+        a = message.embeds[0].description
+        costdesc = (a[a.find('**WP Cost:** '):a.find('\n**Description')-25])
+        cost = costdesc[13:]
+        
+        b = (a[a.find('**Attack Up** - Increases all damage by '): find_nth(a, "%", 2)])
+        buff1 = b[42:]
+        c = (a[find_nth(a,'Increases all damage by ', 2 ): find_nth(a, "%", 3)])
+        buff2 = c[26:]
+        d = (a[find_nth(a,'Increases all damage by ', 3 ): find_nth(a, "%", 4)])
+        buff3 = d[26:]
+        
+        
+        maxquality = ((300-float(cost))*2 + (float(buff1)-10)*10 + (float(buff2)-20)*10 + (float(buff3)-30)*10+100)/5
+        
+
+        
+
+        await message.channel.send("Max Quality: " + str(maxquality))
+        if maxquality > 95 and maxquality < 100:
+          await message.add_reaction('<a:Legendary:828000283949924352>')
+        if maxquality == 100:
+          await message.add_reaction('<a:Fabled:828000330117415002>')
+        if maxquality > 80 and maxquality < 95:
+          await message.add_reaction('<:mythic:828001905409785926>')
+        if maxquality > 60 and maxquality < 80:
+          await message.add_reaction('<:epic:828000457192243210>')
+        if maxquality > 40 and maxquality < 60:
+          await message.add_reaction('<:OwO_Rare:828002430431264789>')
+        if maxquality > 20 and maxquality < 40:
+          await message.add_reaction('<:uncommon:828002604163661865>')
+        if maxquality > 0 and maxquality < 20:
+          await message.add_reaction('<:OwO_Common:828002747235958805>')
 
 
   except:
@@ -391,14 +431,14 @@ async def on_message(message):
     
 @client.command()
 async def info(ctx):
-  embed=discord.Embed(title="Haiiiiii!", description="Made by mythii#9555!", color=0x70ffee)
-  embed.set_author(name="mythii", icon_url="https://cdn.discordapp.com/avatars/470431863316414465/a_4e31f433c9aae3c2dd36fb55d0335a18.gif?size=256")
+  embed=discord.Embed(title="Haiiiiii!", description="Made by mythii#9555!\ncoopw#1111 helped mythii not be an idiot", color=0x70ffee)
+  embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
   embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/719721942742990889/6999b9abe3d5c863a26c61695c75c240.png?size=256")
   embed.set_footer(text="coop is cute")
   await ctx.send(embed=embed)
-  
+client.remove_command('help')
 @client.command()
-async def howto(ctx):
+async def help(ctx):
   embed=discord.Embed(title="OwObot Helper", color=0x70ffee)
   embed.add_field(name="Ping", value="Gets bot latency", inline=False)
   embed.add_field(name="Info", value="Shows bot info", inline=False)
@@ -419,39 +459,69 @@ async def choose(ctx, *choices: str):
 @client.command()  
 async def cf(ctx, headtail: str):
   if(headtail != "head") and headtail != "tail":
-    await ctx.send("invalid")
+    headtail = random.choice("head", "tail")
   else:
     
     choices = ["head","tail"]
     a = random.choice(choices)
     
     if a == headtail:
-      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you were correct!!!"), color=0x00ff08)
-      embed.set_author(name="auxii", icon_url="https://cdn.discordapp.com/avatars/719721942742990889/6999b9abe3d5c863a26c61695c75c240.png?size=256")
+      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you good good!!!"), color=0x00ff08)
+      embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
       embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
       embed.set_footer(text="coopw is cute")
       await ctx.send(embed=embed)
 
     else:
-      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you were wrong!!!"), color=0xff0000)
-      embed.set_author(name="auxii", icon_url="https://cdn.discordapp.com/avatars/719721942742990889/6999b9abe3d5c863a26c61695c75c240.png?size=256")
+      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you bad bad!!!"), color=0xff0000)
+      embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
       embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
       embed.set_footer(text="coopw is cute")
       await ctx.send(embed=embed)
+
+
+
+
+
 
 @client.command()  
 async def coinflip(ctx, headtail: str):
   if(headtail != "head") and headtail != "tail":
-    await ctx.send("invalid")
+    headtail = random.choice("head", "tail")
   else:
     
     choices = ["head","tail"]
     a = random.choice(choices)
     
     if a == headtail:
-       await ctx.send("the coin landed on " + a + " you were correct")
+      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you good good!!!"), color=0x00ff08)
+      embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+      embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
+      embed.set_footer(text="coopw is cute")
+      await ctx.send(embed=embed)
+
     else:
-      await ctx.send("the coin landed on " + a + " you were wrong")
+      embed=discord.Embed(title="Coinflip! ", description=("the coin landed on " + a + " you bad bad!!!"), color=0xff0000)
+      embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+      embed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/10/coin-flip-gif-3.gif")
+      embed.set_footer(text="coopw is cute")
+      await ctx.send(embed=embed)
+
+@client.command(pass_context=True)
+@has_permissions(administrator=True) 
+async def setprefix(ctx, prefix): 
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes[str(ctx.guild.id)] = prefix
+
+    with open('prefixes.json', 'w') as f: 
+        json.dump(prefixes, f, indent=4)
+
+    await ctx.send(f'Prefix changed to: {prefix}') 
+    name=f'{prefix}Auxii'
+
+
 
 keep_alive.keep_alive()
 token = os.environ.get("token")
