@@ -8,27 +8,56 @@ import emoji
 import json
 import asyncio
 import datetime
+import threading
 from discord import Embed
 from discord.utils import get
 from discord.ext import commands, tasks
 from discord.ext.commands import MemberConverter 
 
 from discord.ext.commands import has_permissions,  CheckFailure, check
-#^ basic imports for other features of discord.py and python ^
-intents = discord.Intents.all()
-cooldown = []
-#remember to add fstaff
 
-def get_prefix(client, message):
+intents = discord.Intents.all()
+
+
+def readData():
+  with open('owo.txt') as f:
+      owos = json.load(f)
+def writeData():
+  with open('owo.txt') as f:
+      owos = json.load(f)
+  with open("owo.txt", "w") as outfile:
+    json.dump(owos, outfile)
+
+allowocommands = ["ab", "acceptbattle","battle", "b", "fight", "battlesetting", "bs", "battlesettings","crate", "weaponcrate", "wc","db", "declinebattle","pets", "pet","rename","team", "squad",
+"teams", "setteam", "squads", "useteams","weapon", "w", "weapons", "wep","weaponshard", "ws", "weaponshards", "dismantle","claim", "reward", "compensation","cowoncy", "money", "currency", "cash", "credit", "balance","daily","give", "send","quest","gif", "pic",
+"blush", "cry", "dance", "lewd", "pout", "shrug", "sleepy", "smile", "smug", "thumbsup", "wag", "thinking","triggered", "teehee", "deredere", "thonking", "scoff", "happy", "thumbs", "grin","cuddle", "hug", "kiss", "lick", "nom", "pat", "poke", "slap", "stare", "highfive", "bite", "greet", "punch","handholding", "tickle", "kill", "hold", "pats", "wave", "boop", "snuggle", "fuck", "sex",
+"blackjack", "bj", "21","coinflip", "cf", "coin", "flip",
+"drop", "pickup","lottery", "bet", "lotto","slots", "slot", "s",
+"communism", "communismcat","distractedbf", "distracted","drake","eject", "amongus","emergency", "emergencymeeting","headpat",
+"isthisa","slapcar", "slaproof","spongebobchicken", "schicken",
+"bully", "pika", "pikapika","alastor", "army", "gauntlet", "piku",
+"bunny", "cake", "java", "crown", "cpc", "dish", "donut", "icecream", "lollipop", "meshi", "milk","pizza", "poutine", "rose", "bouquet", "rum", "sharingan", "slime", "teddy", "yy","coffee", "cupachicake", "yinyang","tarot","bell", "strengthtest","roll", "d20","choose", "pick", "decide","my", "me", "guild","top", "rank", "ranking","buy","describe", "desc","equip", "use","inventory", "inv","shop", "market","acceptmarriage", "am","cookie", "rep",
+"declinemarriage", "dm","define","divorce","eightball", "8b", "ask", "8ball","emoji", "enlarge", "jumbo","level", "lvl", "levels", "xp","propose", "marry", "marriage", "wife", "husband","owo", "owoify", "ify","pray", "curse","profile","ship", "combine","translate", "listlang","wallpaper", "wp", "wallpapers", "background", "backgrounds","announce", "changelog", "announcement", "announcements","avatar", "user","censor","checklist", "task", "tasks", "cl","color", "randcolor", "colour", "randcolour","covid", "cv", "covid19", "coronavirus","disable","enable","feedback", "question", "report", "suggest","guildlink","help","invite", "link",
+"math", "calc", "calculate","merch","patreon", "donate","ping", "pong","prefix","rule", "rules","shards", "shard","stats", "stat", "info","uncensor","vote","autohunt", "huntbot", "hb","hunt", "h", "catch","lootbox", "lb","owodex", "od", "dex", "d","sacrifice", "essence", "butcher", "sac", "sc","sell","upgrade", "upg","zoo",]
+
+owoprefix = ['owo', 'h']
+newlist = [owoprefix[0] + s for s in allowocommands]
+nextlist = [owoprefix[1] + s for  s in allowocommands]
+list3 = [owoprefix[0] + ' ' + s for s in allowocommands]
+list4 = [owoprefix[1] + ' ' + s for s in allowocommands]
+alllist = newlist + nextlist + list3 + list4
+def get_prefix(ctx,message):
   with open("prefixes.json", "r") as f:
     prefixes = json.load(f)
-
-  return prefixes[str(message.guild.id)]
+    default = 'm'
+  return [prefixes[str(message.guild.id)], default]
   
 
 
-client = commands.Bot(intents = intents, command_prefix = get_prefix)
-@client.event
+bot = commands.Bot(intents = intents, command_prefix = get_prefix)
+bot.remove_command('help')
+
+@bot.event
 async def on_guild_join(guild):
   with open("prefixes.json", "r") as f:
     prefixes = json.load(f)
@@ -37,7 +66,7 @@ async def on_guild_join(guild):
     json.dump(prefixes,f, indent=4)
 
 
-@client.command()
+@bot.command()
 async def maxqualityreact(message, maxquality):
   if maxquality > 95 and maxquality < 100:
     await message.add_reaction('<a:Legendary:828000283949924352>')
@@ -54,7 +83,7 @@ async def maxqualityreact(message, maxquality):
   if maxquality > 0 and maxquality < 21:
     await message.add_reaction('<:OwO_Common:828002747235958805>')
 
-@client.event
+@bot.event
 async def on_guild_remove(guild):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
@@ -64,7 +93,7 @@ async def on_guild_remove(guild):
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
-@client.command(aliases = ['prefix'])
+@bot.command(aliases = ['prefix'])
 async def setprefix(ctx, prefix):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
@@ -78,17 +107,18 @@ async def setprefix(ctx, prefix):
 
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print("Logged in as: " + client.user.name + "\n") 
+    print("Logged in as: " + bot.user.name + "\n") 
     try: 
       with open('owo.txt') as f:
             owos = json.load(f)
+      
     except:
       print("no")
 
 
-@client.command(aliases = ['setup'])
+@bot.command(aliases = ['setup'])
 
 async def startall(ctx):
   with open('owo.txt') as f:
@@ -101,6 +131,7 @@ async def startall(ctx):
       owos[id] = 0
   with open("owo.txt", "w") as outfile:
     json.dump(owos, outfile)
+  await ctx.send("successfully setup!")
 
 def find_nth(haystack, needle, n):
     start = haystack.find(needle)
@@ -108,7 +139,7 @@ def find_nth(haystack, needle, n):
         start = haystack.find(needle, start+len(needle))
         n -= 1
     return start
-@client.event
+@bot.event
 async def on_message(message):
   
   try:
@@ -366,37 +397,57 @@ async def on_message(message):
   except:
     
     pass
-  
-  await counter(message)
-  await client.process_commands(message)
+
+  await bot.loop.create_task(counter(message))
+
+  await bot.process_commands(message)
 
 owoprefix = ['owo', 'h']
 
-@commands.command()
+
+
+
 async def counter(message):
   userid = str(message.author.id)
 
   with open('owo.txt') as f:
     owos = json.load(f)
-  for i in owoprefix:
-    if i in message.content and message.author.bot == False and       cooldown.count(userid) == 0:
-      if userid not in owos:
-        await message.channel.send("please set up the bot with {prefix}setup")
-      else:
-        cooldown.append(userid)
-        owos[userid] += 1
-        await asyncio.sleep(10)
-        cooldown.remove(userid)
-  
-
-  with open('owo.txt', 'w+') as f:
-      json.dump(owos,f) 
+  try:
+    for i in owoprefix:
 
 
-@client.command(alises = ['reset'])
+      if i in message.content and message.author.bot == False:
+        if any(word in message.content for word in alllist):
+
+          print('1')
+          
+
+        else:
+          if userid not in owos:
+            print("please set up the bot with {prefix}setup")
+          else:
+        
+            owos[userid] += 1
+            
+            await asyncio.sleep(10)
+            with open('owo.txt', 'w+') as f:
+              json.dump(owos,f) 
+
+  except:
+    await message.channel.send('error!')
+
+          
+
+
+
+ 
+
+
+@bot.command(alises = ['reset'])
 async def clear(ctx, user: discord.Member):
   with open('owo.txt') as f:
     owos = json.load(f)
+  
   userid = str(user.id)
   owos[userid] = 0
   await ctx.send(str(user) + "'s owos has been reset.")
@@ -404,36 +455,39 @@ async def clear(ctx, user: discord.Member):
       json.dump(owos,f) 
 
 
-@client.command()
+@bot.command()
 async def info(ctx):
   embed=discord.Embed(title="Haiiiiii!", description="Made by mythii#9555!\ncoopw#1111 helped mythii not be an idiot", color=0x70ffee)
   embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
   embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/719721942742990889/6999b9abe3d5c863a26c61695c75c240.png?size=256")
   embed.set_footer(text="coop is cute")
   await ctx.send(embed=embed)
-client.remove_command('help')
+  
 
-@client.command(aliases = ["howto"])
-async def help(ctx):
+
+@bot.command(aliases = ["howto"])
+@commands.cooldown(1, 5, commands.BucketType.user)
+async def help(message):
   embed=discord.Embed(title="OwObot Helper", color=0x70ffee)
   embed.add_field(name="Ping", value="Gets bot latency", inline=False)
-  embed.add_field(name="Info", value="Shows client info", inline=False)
+  embed.add_field(name="Info", value="Shows bot info", inline=False)
   embed.add_field(name="Choose", value="{prefix}choose {a} {b}, chooses random choice", inline=False)
   embed.add_field(name="cf/coinflip", value="{prefix}cf {head or tail}, will generate a coinflip", inline=False)
   embed.add_field(name="prefix", value="sets a new prefix for the server", inline=False)
   embed.set_footer(text="coop is cute")
-  await ctx.send(embed=embed)
+  await message.channel.send(embed=embed)
 
-@client.command()
+
+@bot.command()
 async def ping(ctx):
-    ms = client.latency * 1000
+    ms = bot.latency * 1000
     await ctx.send('Pong! ' + str(ms) + ' ms')
 
-@client.command()  
+@bot.command()  
 async def choose(ctx, *choices: str):
     await ctx.send(random.choice(choices))
 
-@client.command(aliases = ['top', 'lb'])
+@bot.command(aliases = ['top', 'lb'])
 async def leaderboard(ctx, number: int):
   try:
     embed = discord.Embed(title="Leaderboard", color=0x42b7ff)
@@ -448,19 +502,24 @@ async def leaderboard(ctx, number: int):
             break 
     await ctx.send(embed=embed)
   except:
-    ctx.send("invalid!")
+    await ctx.send("invalid!")
 spankgifs = ['https://media.tenor.com/images/fa746bf2689ab4c7b1cc1e39ab2219d5/tenor.gif', 'https://media.discordapp.net/attachments/826857266455642122/828395321716768768/Spank.gif', 'https://media.tenor.com/images/7072c796c7e0a29930721c5f457d563c/tenor.gif', 'https://media.tenor.com/images/d75aead0dbf59fff4b996ebfecde0560/tenor.gif']
-@client.command()
+@bot.command()
+@commands.cooldown(1, 5, commands.BucketType.user)
 async def spank(message, *, member: discord.Member):
-  await message.channel.send("<@" + str(message.author.id) + "> " + "spanks " + member.mention + " !")
+  await message.channel.send('You'  + " spank " + member.mention + " !")
 
-
+  
   embed=discord.Embed(title=member.name + " gets a spank!")
   embed.set_image(url = random.choice(spankgifs))
+  embed.set_footer(text=(str(message.author.name)  + " spanks " + member.name+ "!"))
   await message.channel.send(embed=embed) 
+  
 
 
-@client.command(aliases = ['coinflip'])  
+
+
+@bot.command(aliases = ['coinflip'])  
 async def cf(ctx, headtail: str):
   try:
     if(headtail != "head") and headtail != "tail":
@@ -486,7 +545,7 @@ async def cf(ctx, headtail: str):
   except:
     await ctx.send("error!")
 
-@client.command(aliases = ['owostat'])
+@bot.command(aliases = ['owostat'])
 async def stat(ctx, user: discord.Member):
   with open('owo.txt') as f:
     owos = json.load(f)
@@ -494,14 +553,43 @@ async def stat(ctx, user: discord.Member):
   embed=discord.Embed(title= (user.name + "'s owos"), description=(user.name + " has " + str(owos[id]) + " owos"), color=0x00ff59)
   embed.set_footer(text="coolw")
   await ctx.send(embed=embed)
+@bot.command()
+async def resetall(ctx):
+
+
+  await ctx.send("resetting!")
+  with open('owo.txt') as f:
+    owos = json.load(f)
+  for user in ctx.guild.members:
+    id = str(user.id)
+    owos[id] = 0
+  with open('owo.txt', 'w+') as f:
+    json.dump(owos,f) 
+  await ctx.send('done!')
 
 
 
-def _save():
-    with open('owo.txt', 'w+') as f:
-        json.dump(owos, f)
 
 
+@bot.command()
+@commands.cooldown(1, 60, commands.BucketType.user)
+async def suggest(message,*, suggestion: str):
+  channel = bot.get_channel(828819989422145567)
+  try:
+    embed=discord.Embed(title = (message.author.name +  "'s suggestion"), description= suggestion)
+    
+    embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
+
+    embed.set_footer(text="coop is cute")
+
+
+    sent = await channel.send(embed=embed)
+    await sent.add_reaction('<:hy_check:828831373514768405>')
+    await sent.add_reaction(('<:hyx:828831379861143553>'))
+    await greenred(embed)
+  except:
+    message.channel.send("you are still on cooldown!")
+  await bot.process_commands(message)
 
 
 
@@ -509,4 +597,4 @@ def _save():
 
 keep_alive.keep_alive()
 token = os.environ.get("token")
-client.run(token)
+bot.run(token)
