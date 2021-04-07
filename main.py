@@ -8,7 +8,6 @@ import emoji
 import json
 import asyncio
 import datetime
-import threading
 from discord import Embed
 from discord.utils import get
 from discord.ext import commands, tasks
@@ -18,15 +17,23 @@ from discord.ext.commands import has_permissions,  CheckFailure, check
 
 intents = discord.Intents.all()
 
+with open('owo.txt') as file:
+  owos = json.load(file)
 
+with open('cooldown.txt') as filee:
+  cooldowns = json.load(filee)
 def readData():
   with open('owo.txt') as f:
       owos = json.load(f)
+  with open('cooldown.txt') as filee:
+    cooldowns = json.load(filee)
 def writeData():
-  with open('owo.txt') as f:
-      owos = json.load(f)
+
   with open("owo.txt", "w") as outfile:
     json.dump(owos, outfile)
+  with open('cooldown.txt', 'w') as filee:
+    json.dump(cooldowns, filee)
+
 
 allowocommands = ["ab", "acceptbattle","battle", "b", "fight", "battlesetting", "bs", "battlesettings","crate", "weaponcrate", "wc","db", "declinebattle","pets", "pet","rename","team", "squad",
 "teams", "setteam", "squads", "useteams","weapon", "w", "weapons", "wep","weaponshard", "ws", "weaponshards", "dismantle","claim", "reward", "compensation","cowoncy", "money", "currency", "cash", "credit", "balance","daily","give", "send","quest","gif", "pic",
@@ -111,8 +118,7 @@ async def setprefix(ctx, prefix):
 async def on_ready():
     print("Logged in as: " + bot.user.name + "\n") 
     try: 
-      with open('owo.txt') as f:
-            owos = json.load(f)
+      readData()
       
     except:
       print("no")
@@ -121,16 +127,19 @@ async def on_ready():
 @bot.command(aliases = ['setup'])
 
 async def startall(ctx):
-  with open('owo.txt') as f:
-    owos = json.load(f)
+  readData()
   for user in ctx.guild.members:
     id = str(user.id)
     if id in owos:
       pass
     else:
       owos[id] = 0
-  with open("owo.txt", "w") as outfile:
-    json.dump(owos, outfile)
+  for user in ctx.guild.members:
+    id = str(user.id)
+
+    cooldowns[id] = 0
+  writeData()
+
   await ctx.send("successfully setup!")
 
 def find_nth(haystack, needle, n):
@@ -409,32 +418,36 @@ owoprefix = ['owo', 'h']
 
 async def counter(message):
   userid = str(message.author.id)
+  id = message.id
 
-  with open('owo.txt') as f:
-    owos = json.load(f)
-  try:
-    for i in owoprefix:
+  ts = id >> 22
+  readData()
+  print(ts)
 
 
-      if i in message.content and message.author.bot == False:
-        if any(word in message.content for word in alllist):
+  for i in owoprefix:
 
-          print('1')
+
+    if i in message.content and message.author.bot == False:
+      if any(word in message.content for word in alllist):
+
+        print('1')
+    
+      if ts - cooldowns[userid] > 10000:
+
+        if userid not in owos:
+          print("please set up the bot with {prefix}setup")
+
           
-
         else:
-          if userid not in owos:
-            print("please set up the bot with {prefix}setup")
-          else:
-        
-            owos[userid] += 1
-            
-            await asyncio.sleep(10)
-            with open('owo.txt', 'w+') as f:
-              json.dump(owos,f) 
+          
+          cooldowns[userid] = ts
+          owos[userid] += 1
+          storedTS = ts
 
-  except:
-    await message.channel.send('error!')
+          writeData()
+
+
 
           
 
@@ -443,16 +456,14 @@ async def counter(message):
  
 
 
-@bot.command(alises = ['reset'])
+@bot.command(aliases = ['reset'])
 async def clear(ctx, user: discord.Member):
-  with open('owo.txt') as f:
-    owos = json.load(f)
+  readData()
   
   userid = str(user.id)
   owos[userid] = 0
   await ctx.send(str(user) + "'s owos has been reset.")
-  with open('owo.txt', 'w+') as f:
-      json.dump(owos,f) 
+  writeData()
 
 
 @bot.command()
@@ -489,21 +500,28 @@ async def choose(ctx, *choices: str):
 
 @bot.command(aliases = ['top', 'lb'])
 async def leaderboard(ctx, number: int):
+
   try:
     embed = discord.Embed(title="Leaderboard", color=0x42b7ff)
     with open('owo.txt', 'r') as file:
         data = json.load(file)
+
     sorted_data = {id: bal for id, bal in sorted(data.items(), reverse=True ,key=lambda item: item[1])}
 
     for pos, (id, bal) in enumerate(sorted_data.items()):
         member = ctx.guild.get_member(int(id))
-        embed.add_field(name=f"{pos+1} - {member.display_name}", value=f"{bal} owos", inline=False)
+        embed.add_field(name=f"{pos+1} - {member.display_name}", 
+        value=f"{bal} owos", inline=False)
+
         if pos+1 > number - 1:
             break 
     await ctx.send(embed=embed)
+    
   except:
     await ctx.send("invalid!")
-spankgifs = ['https://media.tenor.com/images/fa746bf2689ab4c7b1cc1e39ab2219d5/tenor.gif', 'https://media.discordapp.net/attachments/826857266455642122/828395321716768768/Spank.gif', 'https://media.tenor.com/images/7072c796c7e0a29930721c5f457d563c/tenor.gif', 'https://media.tenor.com/images/d75aead0dbf59fff4b996ebfecde0560/tenor.gif']
+
+    
+spankgifs = ['https://media.tenor.com/images/fa746bf2689ab4c7b1cc1e39ab2219d5/tenor.gif', 'https://media.discordapp.net/attachments/826857266455642122/828395321716768768/Spank.gif', 'https://media.tenor.com/images/7072c796c7e0a29930721c5f457d563c/tenor.gif', 'https://media.tenor.com/images/d75aead0dbf59fff4b996ebfecde0560/tenor.gif','https://media.discordapp.net/attachments/829452143006056560/829452211452641310/Spank_Me_Daddy.png']
 @bot.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def spank(message, *, member: discord.Member):
@@ -547,8 +565,7 @@ async def cf(ctx, headtail: str):
 
 @bot.command(aliases = ['owostat'])
 async def stat(ctx, user: discord.Member):
-  with open('owo.txt') as f:
-    owos = json.load(f)
+  readData()
   id = str(user.id)
   embed=discord.Embed(title= (user.name + "'s owos"), description=(user.name + " has " + str(owos[id]) + " owos"), color=0x00ff59)
   embed.set_footer(text="coolw")
@@ -558,13 +575,11 @@ async def resetall(ctx):
 
 
   await ctx.send("resetting!")
-  with open('owo.txt') as f:
-    owos = json.load(f)
+  readData()
   for user in ctx.guild.members:
     id = str(user.id)
     owos[id] = 0
-  with open('owo.txt', 'w+') as f:
-    json.dump(owos,f) 
+  writeData()
   await ctx.send('done!')
 
 
