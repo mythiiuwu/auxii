@@ -7,7 +7,11 @@ import random
 import emoji
 import json
 import asyncio
+import dns
 import datetime
+import pymongo
+from bson.objectid import ObjectId
+from pymongo import MongoClient
 from discord import Embed
 from discord.utils import get
 from discord.ext import commands, tasks
@@ -22,17 +26,8 @@ with open('owo.txt') as file:
 
 with open('cooldown.txt') as filee:
   cooldowns = json.load(filee)
-def readData():
-  with open('owo.txt') as f:
-      owos = json.load(f)
-  with open('cooldown.txt') as filee:
-    cooldowns = json.load(filee)
-def writeData():
 
-  with open("owo.txt", "w") as outfile:
-    json.dump(owos, outfile)
-  with open('cooldown.txt', 'w') as filee:
-    json.dump(cooldowns, filee)
+
 
 
 allowocommands = ["ab", "acceptbattle","battle", "b", "fight", "battlesetting", "bs", "battlesettings","crate", "weaponcrate", "wc","db", "declinebattle","pets", "pet","rename","team", "squad",
@@ -63,6 +58,12 @@ def get_prefix(ctx,message):
 
 bot = commands.Bot(intents = intents, command_prefix = get_prefix)
 bot.remove_command('help')
+
+dbclient = pymongo.MongoClient("mongodb+srv://mythii:chessking@cluster0.xonkd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+
+owos = dbclient['mythii']['owos']
+
+
 
 @bot.event
 async def on_guild_join(guild):
@@ -117,28 +118,23 @@ async def setprefix(ctx, prefix):
 @bot.event
 async def on_ready():
     print("Logged in as: " + bot.user.name + "\n") 
-    try: 
-      readData()
-      
-    except:
-      print("no")
+
 
 
 @bot.command(aliases = ['setup'])
 
 async def startall(ctx):
-  readData()
+  
   for user in ctx.guild.members:
+    
     id = str(user.id)
-    if id in owos:
-      pass
-    else:
-      owos[id] = 0
-  for user in ctx.guild.members:
-    id = str(user.id)
+    print(id)
+    stats = owos.find_one({"id" : user.id})
+    if stats is None:
+      newuser = {"id" : user.id, "owos" : 0}
+      owos.insert_one(newuser)
 
-    cooldowns[id] = 0
-  writeData()
+  
 
   await ctx.send("successfully setup!")
 
@@ -408,7 +404,7 @@ async def on_message(message):
     pass
 
   await bot.loop.create_task(counter(message))
-
+  
   await bot.process_commands(message)
 
 owoprefix = ['owo', 'h']
@@ -421,8 +417,8 @@ async def counter(message):
   id = message.id
 
   ts = id >> 22
-  readData()
-  print(ts)
+  stats = owos.find_one({"id" : message.author.id})
+
 
 
   for i in owoprefix:
@@ -435,17 +431,17 @@ async def counter(message):
     
       if ts - cooldowns[userid] > 10000:
 
-        if userid not in owos:
+        if stats is None:
           print("please set up the bot with {prefix}setup")
 
           
         else:
           
-          cooldowns[userid] = ts
-          owos[userid] += 1
+          newstat = stats["owos"] + 1
+          owos.update_one({"id":message.author.id },{"$set":{"owos":newstat}})
           storedTS = ts
 
-          writeData()
+          
 
 
 
@@ -458,12 +454,15 @@ async def counter(message):
 
 @bot.command(aliases = ['reset'])
 async def clear(ctx, user: discord.Member):
-  readData()
   
-  userid = str(user.id)
-  owos[userid] = 0
-  await ctx.send(str(user) + "'s owos has been reset.")
-  writeData()
+  try:
+    resetuser = {"id" : user.id, "owos" : 0}
+    owos.update_one(resetuser)
+
+    await ctx.send(str(user) + "'s owos has been reset.")
+  except:
+    ctx.send("invalid!!!")
+  
 
 
 @bot.command()
@@ -501,24 +500,22 @@ async def choose(ctx, *choices: str):
 @bot.command(aliases = ['top', 'lb'])
 async def leaderboard(ctx, number: int):
 
-  try:
-    embed = discord.Embed(title="Leaderboard", color=0x42b7ff)
-    with open('owo.txt', 'r') as file:
-        data = json.load(file)
 
-    sorted_data = {id: bal for id, bal in sorted(data.items(), reverse=True ,key=lambda item: item[1])}
+  embed = discord.Embed(title="Leaderboard", color=0x42b7ff)
+  i = 1
+  data = owos.find().sort("owos",-1)
+  for x in data:
+    try:
+      temp = ctx.guild.get_member(x["id"])
+      tempowo = x["owos"]
+      embed.add_field(name = f"{i}: {temp.name}", value =f"Total OwOs: {tempowo} ", inline=False)
+      i += 1
+    except:
+      pass
+    if i == number + 1:
+      break
+  await ctx.send(embed=embed)
 
-    for pos, (id, bal) in enumerate(sorted_data.items()):
-        member = ctx.guild.get_member(int(id))
-        embed.add_field(name=f"{pos+1} - {member.display_name}", 
-        value=f"{bal} owos", inline=False)
-
-        if pos+1 > number - 1:
-            break 
-    await ctx.send(embed=embed)
-    
-  except:
-    await ctx.send("invalid!")
 
     
 spankgifs = ['https://media.tenor.com/images/fa746bf2689ab4c7b1cc1e39ab2219d5/tenor.gif', 'https://media.discordapp.net/attachments/826857266455642122/828395321716768768/Spank.gif', 'https://media.tenor.com/images/7072c796c7e0a29930721c5f457d563c/tenor.gif', 'https://media.tenor.com/images/d75aead0dbf59fff4b996ebfecde0560/tenor.gif','https://media.discordapp.net/attachments/829452143006056560/829452211452641310/Spank_Me_Daddy.png']
@@ -564,23 +561,15 @@ async def cf(ctx, headtail: str):
     await ctx.send("error!")
 
 @bot.command(aliases = ['owostat'])
-async def stat(ctx, user: discord.Member):
-  readData()
+async def stat(ctx,user: discord.Member):
+  
   id = str(user.id)
-  embed=discord.Embed(title= (user.name + "'s owos"), description=(user.name + " has " + str(owos[id]) + " owos"), color=0x00ff59)
+  owonum = (owos.find_one({"id": user.id}))
+  owostats = owonum["owos"]
+  embed=discord.Embed(title= (user.name + "'s owos"), description=(user.name + " has " + str(owostats) + " owos"), color=0x00ff59)
   embed.set_footer(text="coolw")
   await ctx.send(embed=embed)
-@bot.command()
-async def resetall(ctx):
 
-
-  await ctx.send("resetting!")
-  readData()
-  for user in ctx.guild.members:
-    id = str(user.id)
-    owos[id] = 0
-  writeData()
-  await ctx.send('done!')
 
 
 
