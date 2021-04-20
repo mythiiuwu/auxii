@@ -11,7 +11,7 @@ import dns
 import datetime
 import pymongo
 from bson.objectid import ObjectId
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 from discord import Embed
 from discord.utils import get
 from discord.ext import commands, tasks
@@ -21,11 +21,7 @@ from discord.ext.commands import has_permissions,  CheckFailure, check
 
 intents = discord.Intents.all()
 
-with open('owo.txt') as file:
-  owos = json.load(file)
 
-with open('cooldown.txt') as filee:
-  cooldowns = json.load(filee)
 
 
 
@@ -59,9 +55,12 @@ def get_prefix(ctx,message):
 bot = commands.Bot(intents = intents, command_prefix = get_prefix)
 bot.remove_command('help')
 
-dbclient = pymongo.MongoClient("mongodb+srv://mythii:chessking@cluster0.xonkd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+dbclient = AsyncIOMotorClient("mongodb+srv://mythii:auxii@cluster0.xonkd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+
 
 owos = dbclient['mythii']['owos']
+print(owos)
+cooldowns = dbclient['mythii']['cooldowns']
 
 
 
@@ -126,17 +125,25 @@ async def on_ready():
 async def startall(ctx):
   
   for user in ctx.guild.members:
-    
     id = str(user.id)
     print(id)
+
     stats = owos.find_one({"id" : user.id})
     if stats is None:
       newuser = {"id" : user.id, "owos" : 0}
       owos.insert_one(newuser)
-
-  
-
+    newcooldown = {"id" : user.id, "cooldown" : 0}
+    cooldowns.insert_one(newcooldown)
+    
   await ctx.send("successfully setup!")
+
+
+@bot.command()
+async def resetall(ctx):
+  for user in ctx.guild.members:
+    resetuser = {"id" : user.id, "owos" : 0}
+    await owos.update_one({"id":user.id },{"$set":{"owos":0}})
+  await ctx.send('done!')
 
 def find_nth(haystack, needle, n):
     start = haystack.find(needle)
@@ -413,33 +420,40 @@ owoprefix = ['owo', 'h']
 
 
 async def counter(message):
-  userid = str(message.author.id)
-  id = message.id
+  if message.author.bot == False:
+    userid = str(message.author.id)
+    id = message.id
 
-  ts = id >> 22
-  stats = owos.find_one({"id" : message.author.id})
+    ts = id >> 22
+    stats = await owos.find_one({"id" : message.author.id})
+    print(stats)
+
+    cooldownnum = await (cooldowns.find_one({"id": message.author.id}))
+    print(cooldownnum)
+    cooldown = cooldownnum["cooldown"]
+
+    print(cooldown)
+    for i in owoprefix:
 
 
+      if i in message.content:
+        if any(word in message.content for word in alllist):
 
-  for i in owoprefix:
+          print('1')
+      
+        if ts - int(cooldown)   > 10000:
 
+          if stats is None:
+            print("please set up the bot with {prefix}setup")
 
-    if i in message.content and message.author.bot == False:
-      if any(word in message.content for word in alllist):
-
-        print('1')
-    
-      if ts - cooldowns[userid] > 10000:
-
-        if stats is None:
-          print("please set up the bot with {prefix}setup")
-
-          
-        else:
-          
-          newstat = stats["owos"] + 1
-          owos.update_one({"id":message.author.id },{"$set":{"owos":newstat}})
-          storedTS = ts
+            
+          else:
+            
+            newstat = stats["owos"] + 1
+            await owos.update_one({"id":message.author.id },{"$set":{"owos":newstat}})
+            storedTS = ts
+            newcooldown = {"id" : message.author.id, "cooldown" : 0}
+            await cooldowns.update_one({"id":message.author.id },{"$set":{"cooldown": storedTS}})
 
           
 
@@ -457,11 +471,11 @@ async def clear(ctx, user: discord.Member):
   
   try:
     resetuser = {"id" : user.id, "owos" : 0}
-    owos.update_one(resetuser)
+    await owos.update_one(resetuser)
 
     await ctx.send(str(user) + "'s owos has been reset.")
   except:
-    ctx.send("invalid!!!")
+    await ctx.send("invalid!!!")
   
 
 
@@ -503,7 +517,9 @@ async def leaderboard(ctx, number: int):
 
   embed = discord.Embed(title="Leaderboard", color=0x42b7ff)
   i = 1
-  data = owos.find().sort("owos",-1)
+  final = owos.find().sort("owos", pymongo.DESCENDING)
+  data = await final.to_list(None)
+
   for x in data:
     try:
       temp = ctx.guild.get_member(x["id"])
@@ -520,7 +536,7 @@ async def leaderboard(ctx, number: int):
     
 spankgifs = ['https://media.tenor.com/images/fa746bf2689ab4c7b1cc1e39ab2219d5/tenor.gif', 'https://media.discordapp.net/attachments/826857266455642122/828395321716768768/Spank.gif', 'https://media.tenor.com/images/7072c796c7e0a29930721c5f457d563c/tenor.gif', 'https://media.tenor.com/images/d75aead0dbf59fff4b996ebfecde0560/tenor.gif','https://media.discordapp.net/attachments/829452143006056560/829452211452641310/Spank_Me_Daddy.png']
 @bot.command()
-@commands.cooldown(1, 5, commands.BucketType.user)
+@commands.cooldown(1, 2, commands.BucketType.user)
 async def spank(message, *, member: discord.Member):
   await message.channel.send('You'  + " spank " + member.mention + " !")
 
@@ -564,7 +580,7 @@ async def cf(ctx, headtail: str):
 async def stat(ctx,user: discord.Member):
   
   id = str(user.id)
-  owonum = (owos.find_one({"id": user.id}))
+  owonum = await (owos.find_one({"id": user.id}))
   owostats = owonum["owos"]
   embed=discord.Embed(title= (user.name + "'s owos"), description=(user.name + " has " + str(owostats) + " owos"), color=0x00ff59)
   embed.set_footer(text="coolw")
@@ -594,6 +610,9 @@ async def suggest(message,*, suggestion: str):
   except:
     message.channel.send("you are still on cooldown!")
   await bot.process_commands(message)
+
+
+
 
 
 
